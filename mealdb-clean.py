@@ -5,6 +5,9 @@ import json
 
 recipe_list = csv.DictReader(open('mealdb-recipes.csv'))
 
+collated_recipes = []
+
+
 for recipe in recipe_list:
     print(recipe['idMeal'])
 
@@ -26,7 +29,7 @@ for recipe in recipe_list:
         # Append ingredient i to ingredient list
         ingredient_number = 'strIngredient' + str(i)
 
-        if recipe_info[ingredient_number] is not None:
+        if recipe_info[ingredient_number] is not None and recipe_info[ingredient_number] != '':
             recipe['ingredientList'].append(recipe_info[ingredient_number])
 
         # Split measure i into amount and unit
@@ -43,12 +46,10 @@ for recipe in recipe_list:
 
                     recipe['amountList'].append(recipe_info[measureString])
                     recipe['unitsList'].append('')
-                    break
 
                 else:
                     recipe['amountList'].append('')
                     recipe['unitsList'].append(recipe_info[measureString])
-                    break
 
             else:
                 j = measureLength - 1
@@ -63,16 +64,26 @@ for recipe in recipe_list:
                     else:
                         j = j - 1
 
-            # for j, c in enumerate(recipe_info[measureString]):
-            #     if not c.isdigit():
-            #         break
-
-            # measureAmount = recipe_info[measureString][:j]
-            # measureUnit = recipe_info[measureString][j:].strip()
-
-            # Append amount and unit to appropriate lists
-
         i = i + 1
 
-    print(recipe['amountList'])
-    print(recipe['unitsList'])
+    # Format steps into list and add to recipe object
+    recipe_steps = recipe_info['strInstructions'].splitlines()
+
+    recipe_steps = [x for x in recipe_steps if x != '']
+
+    recipe['steps'] = recipe_steps
+
+    # Add recipe name
+    recipe['name'] = recipe_info['strMeal']
+
+    # add picture
+    recipe['pictureLink'] = recipe_info['strMealThumb']
+
+    collated_recipes.append(recipe)
+
+with open('mealdb-collated.csv', 'w', newline='') as output_file:
+    dict_writer = csv.DictWriter(output_file, collated_recipes[0].keys())
+    dict_writer.writeheader()
+    dict_writer.writerows(collated_recipes)
+
+print('recipes saved')
