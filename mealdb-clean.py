@@ -81,7 +81,7 @@ for recipe in recipe_list:
 
     collated_recipes.append(recipe)
 
-with open('mealdb-collated.csv', 'w', newline='') as output_file:
+with open('mealdb-collated.csv', 'w', encoding='utf-8-sig', newline='') as output_file:
     dict_writer = csv.DictWriter(output_file, collated_recipes[0].keys())
     dict_writer.writeheader()
     dict_writer.writerows(collated_recipes)
