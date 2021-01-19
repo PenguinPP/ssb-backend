@@ -1,4 +1,4 @@
-CALL apoc.load.csv("file:///small-cleaned-recipes.csv", {header: true,
+CALL apoc.load.csv("file:///cleaned-recipes.csv", {header: true,
     mapping:{
         idMeal: {type: 'int'},
         ingredientList: {array:true, arraySep: ','},
