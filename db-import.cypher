@@ -4,9 +4,26 @@ CALL apoc.load.csv("file:///cleaned-recipes.csv", {header: true,
         ingredientList: {array:true, arraySep: ','},
         tags: {array:true, arraySep: ','},
         unitsList: {array:true, arraySep: ','},
+        amountList: {array:true, arraySep:','},
+        ingredientPrep: {array:true, arraySep: ','}
     }
 })
 YIELD map
+WITH collect(map) AS recipe_collection
+FOREACH (rc IN recipe_collection | 
+    MERGE (r:recipe{recipeId: rc.idMeal})
+    FOREACH (ing IN range(0,size(rc.ingredientList)-1,1) |
+        MERGE (i:ingredient {name: rc.ingredientList[ing]})
+        MERGE (r) - [c:CONTAINS_INGREDIENT] -> (i)
+        SET c.unit = rc.unitsList[ing], c.preparation = rc.ingredientPrep[ing], c.amount = rc.amountList[ing]
+        )
+    SET r.name = rc.name, r.method = rc.steps, r.picture = rc.pictureLink
+    )
+
+
+
+//Ignore everything below this
+
 UNWIND map.ingredientList AS singleIngredient
 UNWIND map.tags AS singleTag
 UNWIND map.unitsList AS singleUnit
