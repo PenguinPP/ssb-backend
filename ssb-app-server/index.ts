@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 })
 
 //Get all Recipes
-app.get( "/api/recipes/all", async function ( req, res )  {
+app.get( "/api/recipes", async function ( req, res )  {
 
     const allRecipes = await getAllRecipes()
 
@@ -46,7 +46,7 @@ async function getAllRecipes(){
 }
 
 //Get all ingredients
-app.get("/api/ingredients/all" , async function (req, res) {
+app.get("/api/ingredients" , async function (req, res) {
     const allIngredients = await getAllIngredients()
     res.send(allIngredients)
 })
@@ -69,7 +69,7 @@ async function getAllIngredients(){
 }
 
 //Get all tags
-app.get("/api/tags/all" , async function (req, res) {
+app.get("/api/tags" , async function (req, res) {
     const allTags = await getAllTags()
     res.send(allTags)
 })
