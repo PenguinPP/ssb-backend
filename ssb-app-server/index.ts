@@ -31,8 +31,8 @@ app.get( "/api/recipes", async function ( req, res )  {
 //Connect to neo4j server and run query to get all recipes
 async function getAllRecipes(){
     let driver = neo4j.driver(
-        process.env.NEO4J_URL,
-        neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
     )
 
     let session = driver.session()
@@ -54,8 +54,8 @@ app.get("/api/ingredients" , async function (req, res) {
 //Connect to neo4j server and run query to get all ingredients
 async function getAllIngredients(){
     let driver = neo4j.driver(
-        process.env.NEO4J_URL,
-        neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
     )
 
     let session = driver.session()
@@ -77,8 +77,8 @@ app.get("/api/tags" , async function (req, res) {
 //Connect to neo4j server and run query to get all tags
 async function getAllTags(){
     let driver = neo4j.driver(
-        process.env.NEO4J_URL,
-        neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
     )
 
     let session = driver.session()
@@ -103,8 +103,8 @@ async function getAllTags(){
 
 // async function getRecipeFromMainIngredient(ingredient: string) {
 // let driver = neo4j.driver(
-//         process.env.NEO4J_URL,
-//         neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+//         process.env.NEO4J_URL || "",
+//         neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
 //     )
 
 //     let session = driver.session()

@@ -73,7 +73,7 @@ function getAllRecipes() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    driver = neo4j.driver(process.env.NEO4J_URL, neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD));
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
                             .run("MATCH (r:recipe)\n          RETURN r;")];
@@ -106,7 +106,7 @@ function getAllIngredients() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    driver = neo4j.driver(process.env.NEO4J_URL, neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD));
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
                             .run("MATCH (i:ingredient)\n          RETURN i;")];
@@ -139,7 +139,7 @@ function getAllTags() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    driver = neo4j.driver(process.env.NEO4J_URL, neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD));
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
                             .run("MATCH (t:tag)\n          RETURN t;")];
@@ -159,8 +159,8 @@ function getAllTags() {
 // //Connect to neo4j server and get recipes with specified main ingredient
 // async function getRecipeFromMainIngredient(ingredient: string) {
 // let driver = neo4j.driver(
-//         process.env.NEO4J_URL,
-//         neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+//         process.env.NEO4J_URL || "",
+//         neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
 //     )
 //     let session = driver.session()
 //     let result = await session
