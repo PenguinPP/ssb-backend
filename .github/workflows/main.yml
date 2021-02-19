@@ -28,7 +28,7 @@ jobs:
         env:
           ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
         run: |
-          cat $ENV_INFO
+          echo $ENV_INFO
           touch ./ssb-app-server/.env
           echo $ENV_INFO > ./ssb-app-server/.env
           cat ./ssb-app-server/.env
