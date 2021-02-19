@@ -2,13 +2,13 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -26,25 +26,9 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Publish app to Google App Engine
-        # You may pin to the exact commit or the version.
-        # uses: zxyle/publish-gae-action@647a5e5538829de31fdfaad8de523573c417139f
-        uses: zxyle/publish-gae-action@v2.3.0
+      - name: Deploy google app engine
+        uses: vijayp23/deploy-gae-action@1.0.2
         with:
-          # The service account email which will be used for authentication.
-          service_account_email: ${{secrets.GCP_USERNAME}}
-          # The service account key which will be used for authentication.
-          service_account_key: ${{secrets.GCP_PROJECT_KEY}}
-          # GAE project id
-          project_id: ${{secrets.GCP_PROJECT_ID}}
-          # GAE variables to be written to the app.yaml file
-          #gae_variables: # optional
-          # Path to the app.yml, Defaults to ./app.yml
-          gae_config_path: ./ssb-app-server/app.yaml
-          
-      - name: Publish app to Google App Engine
-        run: |
-          # This client-secret.json is converted by GCP_SA_KEY.
-          gcloud auth activate-service-account ${{ secrets.GCP_USERNAME }} --key-file=client-secret.json
-          gcloud config set project ${{ secrets.GCP_PROJECT_KEY }}
-          gcloud -q app deploy app.yaml --promote
+          service-account: ${{ secrets.GCP_PROJECT_KEY}}
+          project-id: ${{ secrets.GCP_PROJECT_ID }}
+          config-files: "./ssb-app-server/app.yaml"
