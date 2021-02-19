@@ -17,3 +17,8 @@ RETURN r;
 //Return all tags
 MATCH (t:tags)
 RETURN t;
+
+//Return list of main ingredients
+MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)
+WITH collect(i.name) AS main_ingredients
+RETURN main_ingredients;

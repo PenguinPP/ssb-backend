@@ -121,30 +121,24 @@ async function getAllTags(){
     return result
 }
 
-// //Get all recipes containing main ingredient
-// app.get("/api/recipes/mainingredient/:ingredient",[param('ingredient').not().isEmpty()] , async function (req, res) {
+app.get("/api/mainIngredients" , async function (req, res) {
+    const allTags = await getMainIngredients()
+    res.send(allTags)
+})
 
-//     console.log(param('ingredient'))
-//     const recipes = await getRecipeFromMainIngredient(param('ingredient'))
-//     res.send(recipes)
-// })
+async function getMainIngredients(){
+    let driver = neo4j.driver(
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
+    )
 
-// //Connect to neo4j server and get recipes with specified main ingredient
+    let session = driver.session()
+    let result = await session
+        .run(
+            `MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)
+            WITH collect(i.name) AS main_ingredients
+            RETURN main_ingredients;`
+        )
 
-// async function getRecipeFromMainIngredient(ingredient: string) {
-// let driver = neo4j.driver(
-//         process.env.NEO4J_URL || "",
-//         neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
-//     )
-
-//     let session = driver.session()
-//     let result = await session
-//         .run(
-//             `MATCH (r:recipe) - [:HAS_MAIN_INGREDIENT] -> (i:ingredient)
-//             WHERE ingredient.name = $ingredientName
-//           RETURN r;`,
-//           {ingredientName: ingredient}
-//         )
-
-//     return result
-// }
+    return result
+}

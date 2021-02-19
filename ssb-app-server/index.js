@@ -182,25 +182,34 @@ function getAllTags() {
         });
     });
 }
-// //Get all recipes containing main ingredient
-// app.get("/api/recipes/mainingredient/:ingredient",[param('ingredient').not().isEmpty()] , async function (req, res) {
-//     console.log(param('ingredient'))
-//     const recipes = await getRecipeFromMainIngredient(param('ingredient'))
-//     res.send(recipes)
-// })
-// //Connect to neo4j server and get recipes with specified main ingredient
-// async function getRecipeFromMainIngredient(ingredient: string) {
-// let driver = neo4j.driver(
-//         process.env.NEO4J_URL || "",
-//         neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
-//     )
-//     let session = driver.session()
-//     let result = await session
-//         .run(
-//             `MATCH (r:recipe) - [:HAS_MAIN_INGREDIENT] -> (i:ingredient)
-//             WHERE ingredient.name = $ingredientName
-//           RETURN r;`,
-//           {ingredientName: ingredient}
-//         )
-//     return result
-// }
+app.get("/api/mainIngredients", function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var allTags;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getMainIngredients()];
+                case 1:
+                    allTags = _a.sent();
+                    res.send(allTags);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
+function getMainIngredients() {
+    return __awaiter(this, void 0, void 0, function () {
+        var driver, session, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
+                    session = driver.session();
+                    return [4 /*yield*/, session
+                            .run("MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)\n            WITH collect(i.name) AS main_ingredients\n            RETURN main_ingredients;")];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
