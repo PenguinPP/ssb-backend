@@ -17,17 +17,22 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    name: GAE Deploy
+    name: Google App Engine Deployment
     runs-on: ubuntu-latest
     steps:
+      #Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      #Creates .env file
+      - name: Create environment variables
         env:
           ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
-
-      - run: |
+        run: |
           touch .env
           echo $ENV_INFO > ./ssb-app-server/.env
-          cat .env
+          cat ./ssb-app-server/.env
+
+      - name: Deploy application
       - id: deploy
         uses: google-github-actions/deploy-appengine@main
         with:
