@@ -33,7 +33,7 @@ jobs:
           cat ./ssb-app-server/.env
 
       - name: Deploy application
-      - id: deploy
+        id: deploy
         uses: google-github-actions/deploy-appengine@main
         with:
           credentials: ${{ secrets.GCP_JSON_CREDENTIALS }}
