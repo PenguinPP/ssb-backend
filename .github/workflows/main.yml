@@ -24,4 +24,4 @@ jobs:
         uses: google-github-actions/deploy-appengine@main
         with:
           credentials: ${{ secrets.GCP_JSON_CREDENTIALS }}
-          deliverables: ./ssb-app-server/app.yaml
+          deliverables: ssb-app-server/app.yaml
