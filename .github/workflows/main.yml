@@ -21,6 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        env:
+          ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
+        run: |
+          touch .env
+          echo $ENV_INFO > ./ssb-app-server/.env
+          cat .env
       - id: deploy
         uses: google-github-actions/deploy-appengine@main
         with:
