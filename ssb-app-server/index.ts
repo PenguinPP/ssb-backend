@@ -20,6 +20,36 @@ app.get("/", (req, res) => {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ")
 })
 
+
+//Get all recipes and details for ingredients and main ingredients
+app.get( "/api/recipeDetails", async function ( req, res )  {
+
+    const allRecipes = await getAllRecipeDetails()
+
+    res.send(allRecipes);
+} );
+
+async function getAllRecipeDetails(){
+    let driver = neo4j.driver(
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
+    )
+
+    let session = driver.session()
+    let result = await session
+        .run(
+            `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+            WITH collect(m.name) AS main_ingredients, r
+            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
+            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
+            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;
+`
+        )
+
+    return result
+}
+
+
 //Get all Recipes
 app.get( "/api/recipes", async function ( req, res )  {
 

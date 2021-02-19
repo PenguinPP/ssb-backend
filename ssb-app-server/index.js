@@ -51,6 +51,38 @@ app.listen(port, function () {
 app.get("/", function (req, res) {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ");
 });
+//Get all recipes and details for ingredients and main ingredients
+app.get("/api/recipeDetails", function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var allRecipes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getAllRecipeDetails()];
+                case 1:
+                    allRecipes = _a.sent();
+                    res.send(allRecipes);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
+function getAllRecipeDetails() {
+    return __awaiter(this, void 0, void 0, function () {
+        var driver, session, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
+                    session = driver.session();
+                    return [4 /*yield*/, session
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts\n            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;\n")];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
 //Get all Recipes
 app.get("/api/recipes", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
