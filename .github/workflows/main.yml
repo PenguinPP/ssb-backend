@@ -25,4 +25,4 @@ jobs:
         with:
           credentials: ${{ secrets.GCP_JSON_CREDENTIALS }}
           #working_directory: ../ssb-app-server
-          deliverables: ./app.yaml
+          deliverables: app.yaml
