@@ -28,9 +28,9 @@ jobs:
         env:
           ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
         run: |
-          echo $ENV_INFO
+          echo "$ENV_INFO"
           touch ./ssb-app-server/.env
-          echo $ENV_INFO > ./ssb-app-server/.env
+          echo "${{ secrets.APP_SERVER_ENV }}" > ./ssb-app-server/.env
           cat ./ssb-app-server/.env
 
       - name: Deploy application
