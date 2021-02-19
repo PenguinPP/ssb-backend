@@ -41,3 +41,10 @@ jobs:
           #gae_variables: # optional
           # Path to the app.yml, Defaults to ./app.yml
           gae_config_path: ./ssb-app-server/app.yaml
+          
+      - name: Publish app to Google App Engine
+        run: |
+          # This client-secret.json is converted by GCP_SA_KEY.
+          gcloud auth activate-service-account ${{ secrets.GCP_USERNAME }} --key-file=client-secret.json
+          gcloud config set project ${{ secrets.GCP_PROJECT_KEY }}
+          gcloud -q app deploy app.yaml --promote
