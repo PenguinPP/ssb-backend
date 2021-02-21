@@ -5,6 +5,14 @@ MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
 WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
 RETURN r, main_ingredients, all_ingredients, ingredient_amounts;
 
+//Return Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+WITH collect(m.name) AS main_ingredients, r
+MATCH (r)-[:HAS_TAG]->(t:tag)
+WITH collect(t) AS tags, r, main_ingredients
+RETURN r.name, r.recipeId, tags, main_ingredients
+
+
 //Return all ingredients
 MATCH (i:ingredient)
 RETURN i;

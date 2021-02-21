@@ -121,11 +121,13 @@ async function getAllTags(){
     return result
 }
 
+// Get all main ingredients
 app.get("/api/mainIngredients" , async function (req, res) {
     const allMainIngredients = await getMainIngredients()
     res.send(allMainIngredients.records)
 })
 
+//Connect to neo4j server and run query to get all main ingredients
 async function getMainIngredients(){
     let driver = neo4j.driver(
         process.env.NEO4J_URL || "",
@@ -138,6 +140,33 @@ async function getMainIngredients(){
             `MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)
             WITH collect(i.name) AS main_ingredients
             RETURN main_ingredients;`
+        )
+
+    return result
+}
+
+
+//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+app.get("/api/recipePreviews" , async function (req, res) {
+    const allRecipePreviews = await getRecipePreviews()
+    res.send(allRecipePreviews.records)
+})
+
+//Connect to neo4j server and run query to get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+async function getRecipePreviews(){
+    let driver = neo4j.driver(
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
+    )
+
+    let session = driver.session()
+    let result = await session
+        .run(
+            `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+            WITH collect(m.name) AS main_ingredients, r
+            MATCH (r)-[:HAS_TAG]->(t:tag)
+            WITH collect(t) AS tags, r, main_ingredients
+            RETURN r.name AS name, r.recipeId AS id, tags, main_ingredients;`
         )
 
     return result

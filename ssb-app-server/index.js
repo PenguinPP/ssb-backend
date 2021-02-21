@@ -182,20 +182,22 @@ function getAllTags() {
         });
     });
 }
+// Get all main ingredients
 app.get("/api/mainIngredients", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var allTags;
+        var allMainIngredients;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getMainIngredients()];
                 case 1:
-                    allTags = _a.sent();
-                    res.send(allTags);
+                    allMainIngredients = _a.sent();
+                    res.send(allMainIngredients.records);
                     return [2 /*return*/];
             }
         });
     });
 });
+//Connect to neo4j server and run query to get all main ingredients
 function getMainIngredients() {
     return __awaiter(this, void 0, void 0, function () {
         var driver, session, result;
@@ -206,6 +208,39 @@ function getMainIngredients() {
                     session = driver.session();
                     return [4 /*yield*/, session
                             .run("MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)\n            WITH collect(i.name) AS main_ingredients\n            RETURN main_ingredients;")];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
+//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+app.get("/api/recipePreviews", function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var allRecipePreviews;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getRecipePreviews()];
+                case 1:
+                    allRecipePreviews = _a.sent();
+                    res.send(allRecipePreviews.records);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
+//Connect to neo4j server and run query to get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+function getRecipePreviews() {
+    return __awaiter(this, void 0, void 0, function () {
+        var driver, session, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
+                    session = driver.session();
+                    return [4 /*yield*/, session
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t) AS tags, r, main_ingredients\n            RETURN r.name AS name, r.recipeId AS id, tags, main_ingredients;")];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];
