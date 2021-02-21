@@ -1,7 +1,7 @@
 import express = require('express');
 import neo4j = require('neo4j-driver')
 import * as dotenv from 'dotenv'
-const { param } = require('express-validator');
+import { param } from 'express-validator';
 
 dotenv.config()
 
@@ -166,7 +166,42 @@ async function getRecipePreviews(){
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[:HAS_TAG]->(t:tag)
             WITH collect(t) AS tags, r, main_ingredients
-            RETURN r.name AS name, r.recipeId AS id, tags, main_ingredients;`
+            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;`
+        )
+
+    return result
+}
+
+//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+app.get("/api/recipePreviews" , async function (req, res) {
+    const allRecipePreviews = await getRecipePreviews()
+    res.send(allRecipePreviews.records)
+})
+
+//Get data for specific recipe
+app.get("/api/recipe/:recipeId", [param("recipeId").not().isEmpty()], async function (req, res){
+    const specificRecipeDetails = await getSpecificRecipeDetails(parseInt(req.params.recipeId))
+    console.log(typeof parseInt(req.params.recipeId))
+    res.send(specificRecipeDetails.records)
+})
+
+
+async function getSpecificRecipeDetails(recipeId: number){
+    let driver = neo4j.driver(
+        process.env.NEO4J_URL || "",
+        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
+    )
+
+    let session = driver.session()
+    let result = await session
+        .run(
+            `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+            WHERE r.recipeId = $selectedRecipeId 
+            WITH collect(m.name) AS main_ingredients, r
+            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
+            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
+            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;`,
+            {selectedRecipeId : recipeId}
         )
 
     return result

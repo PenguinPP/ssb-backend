@@ -39,7 +39,7 @@ exports.__esModule = true;
 var express = require("express");
 var neo4j = require("neo4j-driver");
 var dotenv = require("dotenv");
-var param = require('express-validator').param;
+var express_validator_1 = require("express-validator");
 dotenv.config();
 var app = express();
 var port = 8080;
@@ -240,7 +240,55 @@ function getRecipePreviews() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t) AS tags, r, main_ingredients\n            RETURN r.name AS name, r.recipeId AS id, tags, main_ingredients;")];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t) AS tags, r, main_ingredients\n            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;")];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
+//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
+app.get("/api/recipePreviews", function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var allRecipePreviews;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getRecipePreviews()];
+                case 1:
+                    allRecipePreviews = _a.sent();
+                    res.send(allRecipePreviews.records);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
+//Get data for specific recipe
+app.get("/api/recipe/:recipeId", [express_validator_1.param("recipeId").not().isEmpty()], function (req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var specificRecipeDetails;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getSpecificRecipeDetails(parseInt(req.params.recipeId))];
+                case 1:
+                    specificRecipeDetails = _a.sent();
+                    console.log(typeof parseInt(req.params.recipeId));
+                    res.send(specificRecipeDetails.records);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
+function getSpecificRecipeDetails(recipeId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var driver, session, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
+                    session = driver.session();
+                    return [4 /*yield*/, session
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WHERE r.recipeId = $selectedRecipeId \n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts\n            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;", { selectedRecipeId: recipeId })];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];
