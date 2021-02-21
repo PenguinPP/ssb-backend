@@ -60,7 +60,7 @@ app.get("/api/recipeDetails", function (req, res) {
                 case 0: return [4 /*yield*/, getAllRecipeDetails()];
                 case 1:
                     allRecipes = _a.sent();
-                    res.send(allRecipes);
+                    res.send(allRecipes.records);
                     return [2 /*return*/];
             }
         });
@@ -92,7 +92,7 @@ app.get("/api/recipes", function (req, res) {
                 case 0: return [4 /*yield*/, getAllRecipes()];
                 case 1:
                     allRecipes = _a.sent();
-                    res.send(allRecipes);
+                    res.send(allRecipes.records);
                     return [2 /*return*/];
             }
         });
@@ -125,7 +125,7 @@ app.get("/api/ingredients", function (req, res) {
                 case 0: return [4 /*yield*/, getAllIngredients()];
                 case 1:
                     allIngredients = _a.sent();
-                    res.send(allIngredients);
+                    res.send(allIngredients.records);
                     return [2 /*return*/];
             }
         });
@@ -158,7 +158,7 @@ app.get("/api/tags", function (req, res) {
                 case 0: return [4 /*yield*/, getAllTags()];
                 case 1:
                     allTags = _a.sent();
-                    res.send(allTags);
+                    res.send(allTags.records);
                     return [2 /*return*/];
             }
         });

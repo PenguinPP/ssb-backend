@@ -26,7 +26,7 @@ app.get( "/api/recipeDetails", async function ( req, res )  {
 
     const allRecipes = await getAllRecipeDetails()
 
-    res.send(allRecipes);
+    res.send(allRecipes.records);
 } );
 
 async function getAllRecipeDetails(){
@@ -55,7 +55,7 @@ app.get( "/api/recipes", async function ( req, res )  {
 
     const allRecipes = await getAllRecipes()
 
-    res.send(allRecipes);
+    res.send(allRecipes.records);
 } );
 
 //Connect to neo4j server and run query to get all recipes
@@ -78,7 +78,7 @@ async function getAllRecipes(){
 //Get all ingredients
 app.get("/api/ingredients" , async function (req, res) {
     const allIngredients = await getAllIngredients()
-    res.send(allIngredients)
+    res.send(allIngredients.records)
 })
 
 //Connect to neo4j server and run query to get all ingredients
@@ -101,7 +101,7 @@ async function getAllIngredients(){
 //Get all tags
 app.get("/api/tags" , async function (req, res) {
     const allTags = await getAllTags()
-    res.send(allTags)
+    res.send(allTags.records)
 })
 
 //Connect to neo4j server and run query to get all tags
@@ -122,8 +122,8 @@ async function getAllTags(){
 }
 
 app.get("/api/mainIngredients" , async function (req, res) {
-    const allTags = await getMainIngredients()
-    res.send(allTags)
+    const allMainIngredients = await getMainIngredients()
+    res.send(allMainIngredients.records)
 })
 
 async function getMainIngredients(){
