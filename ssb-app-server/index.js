@@ -240,7 +240,7 @@ function getRecipePreviews() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t) AS tags, r, main_ingredients\n            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;")];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t.name) AS tags, r, main_ingredients\n            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;")];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];
@@ -288,7 +288,7 @@ function getSpecificRecipeDetails(recipeId) {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WHERE r.recipeId = $selectedRecipeId \n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts\n            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;", { selectedRecipeId: recipeId })];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WHERE r.recipeId = $selectedRecipeId \n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep\n            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts;", { selectedRecipeId: recipeId })];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];

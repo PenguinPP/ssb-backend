@@ -28,7 +28,7 @@ CALL apoc.load.csv("file:///cleaned-recipes.csv", {header: true,
     mapping:{
         idMeal: {type: 'int'},
         ingredientList: {array:true, arraySep: ','},
-        tags: {array:true, arraySep: ','},
+        Tags: {array:true, arraySep: ','},
         unitsList: {array:true, arraySep: ','},
         amountList: {array:true, arraySep:','},
         ingredientPrep: {array:true, arraySep: ','},

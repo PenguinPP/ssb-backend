@@ -165,7 +165,7 @@ async function getRecipePreviews(){
             `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[:HAS_TAG]->(t:tag)
-            WITH collect(t) AS tags, r, main_ingredients
+            WITH collect(t.name) AS tags, r, main_ingredients
             RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;`
         )
 
@@ -199,8 +199,8 @@ async function getSpecificRecipeDetails(recipeId: number){
             WHERE r.recipeId = $selectedRecipeId 
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
-            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
-            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;`,
+            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
+            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts;`,
             {selectedRecipeId : recipeId}
         )
 
