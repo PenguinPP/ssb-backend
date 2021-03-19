@@ -20,14 +20,30 @@ app.get("/", (req, res) => {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ")
 })
 
+type Identity = {
+    low: number,
+    high: number
+}
+
+type Recipe = {
+    recipe_id: Identity,
+    recipe_name: String,
+    recipe_picture: String,
+    all_ingredients: String[],
+    main_ingredients: String[],
+    ingredient_amounts: String[],
+    ingredient_units: String[],
+    ingredient_prep: String[]
+};
+
 
 //Get all recipes and details for ingredients and main ingredients
-app.get( "/api/recipeDetails", async function ( req, res )  {
+app.get( "/api/recipes/details", async function ( req, res )  {
 
-    const allRecipes = await getAllRecipeDetails()
+    const allRecipes : Recipe[] = await getAllRecipeDetails()
 
-    res.send(allRecipes.records);
-} );
+    res.send(allRecipes);
+});
 
 async function getAllRecipeDetails(){
     let driver = neo4j.driver(
@@ -41,44 +57,35 @@ async function getAllRecipeDetails(){
             `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
-            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
-            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;
-`
+            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, 
+            collect (c.preparation) AS ingredient_prep
+            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`
         )
-
-    return result
+    
+    return result.records.map((record) => {
+        const {recipe_id, recipe_name, recipe_picture, all_ingredients, main_ingredients, ingredient_amounts, ingredient_prep, ingredient_units} = record.toObject();
+        const recipe : Recipe = {
+            recipe_id: recipe_id,
+            recipe_name: recipe_name,
+            recipe_picture: recipe_picture,
+            all_ingredients: all_ingredients,
+            main_ingredients: main_ingredients,
+            ingredient_amounts: ingredient_amounts,
+            ingredient_units: ingredient_units,
+            ingredient_prep: ingredient_prep
+        }
+        return recipe;
+    })
 }
 
-
-//Get all Recipes
-app.get( "/api/recipes", async function ( req, res )  {
-
-    const allRecipes = await getAllRecipes()
-
-    res.send(allRecipes.records);
-} );
-
-//Connect to neo4j server and run query to get all recipes
-async function getAllRecipes(){
-    let driver = neo4j.driver(
-        process.env.NEO4J_URL || "",
-        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
-    )
-
-    let session = driver.session()
-    let result = await session
-        .run(
-            `MATCH (r:recipe)
-          RETURN r;`
-        )
-
-    return result
+type Ingredient = {
+    ingredient_name: String
 }
 
 //Get all ingredients
-app.get("/api/ingredients" , async function (req, res) {
-    const allIngredients = await getAllIngredients()
-    res.send(allIngredients.records)
+app.get("/api/ingredients/all" , async function (req, res) {
+    const allIngredients : Ingredient[] = await getAllIngredients()
+    res.send(allIngredients)
 })
 
 //Connect to neo4j server and run query to get all ingredients
@@ -92,16 +99,27 @@ async function getAllIngredients(){
     let result = await session
         .run(
             `MATCH (i:ingredient)
-          RETURN i;`
+          RETURN i.name AS ingredient_name;`
         )
 
-    return result
+    return result.records.map((record) => {
+        const {ingredient_name} = record.toObject()
+        const ingredient : Ingredient = {
+            ingredient_name: ingredient_name
+        }
+        
+        return ingredient;
+    })
+}
+
+type Tag = {
+    tag_name: String
 }
 
 //Get all tags
-app.get("/api/tags" , async function (req, res) {
-    const allTags = await getAllTags()
-    res.send(allTags.records)
+app.get("/api/tags/all" , async function (req, res) {
+    const allTags : Tag[] = await getAllTags()
+    res.send(allTags)
 })
 
 //Connect to neo4j server and run query to get all tags
@@ -115,41 +133,30 @@ async function getAllTags(){
     let result = await session
         .run(
             `MATCH (t:tag)
-          RETURN t;`
+          RETURN t.name AS tag_name;`
         )
 
-    return result
+    return result.records.map((record) => {
+        const {tag_name} = record.toObject()
+        const tag : Tag = {
+            tag_name: tag_name
+        }
+
+        return tag;
+    })
 }
 
-// Get all main ingredients
-app.get("/api/mainIngredients" , async function (req, res) {
-    const allMainIngredients = await getMainIngredients()
-    res.send(allMainIngredients.records)
-})
-
-//Connect to neo4j server and run query to get all main ingredients
-async function getMainIngredients(){
-    let driver = neo4j.driver(
-        process.env.NEO4J_URL || "",
-        neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || "")
-    )
-
-    let session = driver.session()
-    let result = await session
-        .run(
-            `MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)
-            WITH collect(i.name) AS main_ingredients
-            RETURN main_ingredients;`
-        )
-
-    return result
+type RecipePreview = {
+    recipe_name: String,
+    recipe_id: Identity,
+    recipe_tags: String[],
+    main_ingredients: String[]
 }
-
 
 //Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
-app.get("/api/recipePreviews" , async function (req, res) {
-    const allRecipePreviews = await getRecipePreviews()
-    res.send(allRecipePreviews.records)
+app.get("/api/recipes/previews" , async function (req, res) {
+    const allRecipePreviews : RecipePreview[] = await getRecipePreviews()
+    res.send(allRecipePreviews)
 })
 
 //Connect to neo4j server and run query to get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
@@ -165,24 +172,29 @@ async function getRecipePreviews(){
             `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[:HAS_TAG]->(t:tag)
-            WITH collect(t.name) AS tags, r, main_ingredients
-            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;`
+            WITH collect(t.name) AS recipe_tags, r, main_ingredients
+            RETURN r.name AS recipe_name, r.recipeId AS recipe_id, recipe_tags, main_ingredients;`
         )
+    
+    return result.records.map((record) => {
+        const {recipe_name, recipe_id, recipe_tags, main_ingredients} = record.toObject()
 
-    return result
+        const recipe_preview : RecipePreview = {
+            recipe_name: recipe_name,
+            recipe_id: recipe_id,
+            recipe_tags: recipe_tags,
+            main_ingredients: main_ingredients
+        }
+
+        return recipe_preview;
+    })
 }
-
-//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
-app.get("/api/recipePreviews" , async function (req, res) {
-    const allRecipePreviews = await getRecipePreviews()
-    res.send(allRecipePreviews.records)
-})
 
 //Get data for specific recipe
 app.get("/api/recipe/:recipeId", [param("recipeId").not().isEmpty()], async function (req, res){
-    const specificRecipeDetails = await getSpecificRecipeDetails(parseInt(req.params.recipeId))
-    console.log(typeof parseInt(req.params.recipeId))
-    res.send(specificRecipeDetails.records)
+    const specificRecipeDetails : Recipe = await getSpecificRecipeDetails(parseInt(req.params.recipeId))
+    
+    res.send(specificRecipeDetails)
 })
 
 
@@ -200,9 +212,24 @@ async function getSpecificRecipeDetails(recipeId: number){
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
-            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts;`,
+            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`,
             {selectedRecipeId : recipeId}
         )
+    console.log(result.records.map(record => record.toObject()))
 
-    return result
+    const record = result.records[0]
+    const {recipe_id, recipe_name, recipe_picture, all_ingredients, main_ingredients, ingredient_amounts, ingredient_prep, ingredient_units} = record.toObject();
+
+    const recipe : Recipe = {
+            recipe_id: recipe_id,
+            recipe_name: recipe_name,
+            recipe_picture: recipe_picture,
+            all_ingredients: all_ingredients,
+            main_ingredients: main_ingredients,
+            ingredient_amounts: ingredient_amounts,
+            ingredient_units: ingredient_units,
+            ingredient_prep: ingredient_prep
+        }
+
+    return recipe
 }

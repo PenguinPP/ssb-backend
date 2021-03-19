@@ -52,7 +52,7 @@ app.get("/", function (req, res) {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ");
 });
 //Get all recipes and details for ingredients and main ingredients
-app.get("/api/recipeDetails", function (req, res) {
+app.get("/api/recipes/details", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var allRecipes;
         return __generator(this, function (_a) {
@@ -60,7 +60,7 @@ app.get("/api/recipeDetails", function (req, res) {
                 case 0: return [4 /*yield*/, getAllRecipeDetails()];
                 case 1:
                     allRecipes = _a.sent();
-                    res.send(allRecipes.records);
+                    res.send(allRecipes);
                     return [2 /*return*/];
             }
         });
@@ -75,49 +75,29 @@ function getAllRecipeDetails() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts\n            RETURN r, main_ingredients, all_ingredients, ingredient_amounts;\n")];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, \n            collect (c.preparation) AS ingredient_prep\n            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;")];
                 case 1:
                     result = _a.sent();
-                    return [2 /*return*/, result];
-            }
-        });
-    });
-}
-//Get all Recipes
-app.get("/api/recipes", function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var allRecipes;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getAllRecipes()];
-                case 1:
-                    allRecipes = _a.sent();
-                    res.send(allRecipes.records);
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
-//Connect to neo4j server and run query to get all recipes
-function getAllRecipes() {
-    return __awaiter(this, void 0, void 0, function () {
-        var driver, session, result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
-                    session = driver.session();
-                    return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)\n          RETURN r;")];
-                case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, result.records.map(function (record) {
+                            var _a = record.toObject(), recipe_id = _a.recipe_id, recipe_name = _a.recipe_name, recipe_picture = _a.recipe_picture, all_ingredients = _a.all_ingredients, main_ingredients = _a.main_ingredients, ingredient_amounts = _a.ingredient_amounts, ingredient_prep = _a.ingredient_prep, ingredient_units = _a.ingredient_units;
+                            var recipe = {
+                                recipe_id: recipe_id,
+                                recipe_name: recipe_name,
+                                recipe_picture: recipe_picture,
+                                all_ingredients: all_ingredients,
+                                main_ingredients: main_ingredients,
+                                ingredient_amounts: ingredient_amounts,
+                                ingredient_units: ingredient_units,
+                                ingredient_prep: ingredient_prep
+                            };
+                            return recipe;
+                        })];
             }
         });
     });
 }
 //Get all ingredients
-app.get("/api/ingredients", function (req, res) {
+app.get("/api/ingredients/all", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var allIngredients;
         return __generator(this, function (_a) {
@@ -125,7 +105,7 @@ app.get("/api/ingredients", function (req, res) {
                 case 0: return [4 /*yield*/, getAllIngredients()];
                 case 1:
                     allIngredients = _a.sent();
-                    res.send(allIngredients.records);
+                    res.send(allIngredients);
                     return [2 /*return*/];
             }
         });
@@ -141,16 +121,22 @@ function getAllIngredients() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (i:ingredient)\n          RETURN i;")];
+                            .run("MATCH (i:ingredient)\n          RETURN i.name AS ingredient_name;")];
                 case 1:
                     result = _a.sent();
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, result.records.map(function (record) {
+                            var ingredient_name = record.toObject().ingredient_name;
+                            var ingredient = {
+                                ingredient_name: ingredient_name
+                            };
+                            return ingredient;
+                        })];
             }
         });
     });
 }
 //Get all tags
-app.get("/api/tags", function (req, res) {
+app.get("/api/tags/all", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var allTags;
         return __generator(this, function (_a) {
@@ -158,7 +144,7 @@ app.get("/api/tags", function (req, res) {
                 case 0: return [4 /*yield*/, getAllTags()];
                 case 1:
                     allTags = _a.sent();
-                    res.send(allTags.records);
+                    res.send(allTags);
                     return [2 /*return*/];
             }
         });
@@ -174,49 +160,22 @@ function getAllTags() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (t:tag)\n          RETURN t;")];
+                            .run("MATCH (t:tag)\n          RETURN t.name AS tag_name;")];
                 case 1:
                     result = _a.sent();
-                    return [2 /*return*/, result];
-            }
-        });
-    });
-}
-// Get all main ingredients
-app.get("/api/mainIngredients", function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var allMainIngredients;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getMainIngredients()];
-                case 1:
-                    allMainIngredients = _a.sent();
-                    res.send(allMainIngredients.records);
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
-//Connect to neo4j server and run query to get all main ingredients
-function getMainIngredients() {
-    return __awaiter(this, void 0, void 0, function () {
-        var driver, session, result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
-                    session = driver.session();
-                    return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)\n            WITH collect(i.name) AS main_ingredients\n            RETURN main_ingredients;")];
-                case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, result.records.map(function (record) {
+                            var tag_name = record.toObject().tag_name;
+                            var tag = {
+                                tag_name: tag_name
+                            };
+                            return tag;
+                        })];
             }
         });
     });
 }
 //Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
-app.get("/api/recipePreviews", function (req, res) {
+app.get("/api/recipes/previews", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var allRecipePreviews;
         return __generator(this, function (_a) {
@@ -224,7 +183,7 @@ app.get("/api/recipePreviews", function (req, res) {
                 case 0: return [4 /*yield*/, getRecipePreviews()];
                 case 1:
                     allRecipePreviews = _a.sent();
-                    res.send(allRecipePreviews.records);
+                    res.send(allRecipePreviews);
                     return [2 /*return*/];
             }
         });
@@ -240,29 +199,23 @@ function getRecipePreviews() {
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t.name) AS tags, r, main_ingredients\n            RETURN r.name AS recipe_name, r.recipeId AS id, tags, main_ingredients;")];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[:HAS_TAG]->(t:tag)\n            WITH collect(t.name) AS recipe_tags, r, main_ingredients\n            RETURN r.name AS recipe_name, r.recipeId AS recipe_id, recipe_tags, main_ingredients;")];
                 case 1:
                     result = _a.sent();
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, result.records.map(function (record) {
+                            var _a = record.toObject(), recipe_name = _a.recipe_name, recipe_id = _a.recipe_id, recipe_tags = _a.recipe_tags, main_ingredients = _a.main_ingredients;
+                            var recipe_preview = {
+                                recipe_name: recipe_name,
+                                recipe_id: recipe_id,
+                                recipe_tags: recipe_tags,
+                                main_ingredients: main_ingredients
+                            };
+                            return recipe_preview;
+                        })];
             }
         });
     });
 }
-//Get Recipe Preview details (ID, Name, list of main ingredients, list of tags)
-app.get("/api/recipePreviews", function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var allRecipePreviews;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, getRecipePreviews()];
-                case 1:
-                    allRecipePreviews = _a.sent();
-                    res.send(allRecipePreviews.records);
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
 //Get data for specific recipe
 app.get("/api/recipe/:recipeId", [express_validator_1.param("recipeId").not().isEmpty()], function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
@@ -272,8 +225,7 @@ app.get("/api/recipe/:recipeId", [express_validator_1.param("recipeId").not().is
                 case 0: return [4 /*yield*/, getSpecificRecipeDetails(parseInt(req.params.recipeId))];
                 case 1:
                     specificRecipeDetails = _a.sent();
-                    console.log(typeof parseInt(req.params.recipeId));
-                    res.send(specificRecipeDetails.records);
+                    res.send(specificRecipeDetails);
                     return [2 /*return*/];
             }
         });
@@ -281,17 +233,30 @@ app.get("/api/recipe/:recipeId", [express_validator_1.param("recipeId").not().is
 });
 function getSpecificRecipeDetails(recipeId) {
     return __awaiter(this, void 0, void 0, function () {
-        var driver, session, result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var driver, session, result, record, _a, recipe_id, recipe_name, recipe_picture, all_ingredients, main_ingredients, ingredient_amounts, ingredient_prep, ingredient_units, recipe;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     driver = neo4j.driver(process.env.NEO4J_URL || "", neo4j.auth.basic(process.env.NEO4J_USER || "", process.env.NEO4J_PASSWORD || ""));
                     session = driver.session();
                     return [4 /*yield*/, session
-                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WHERE r.recipeId = $selectedRecipeId \n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep\n            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts;", { selectedRecipeId: recipeId })];
+                            .run("MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)\n            WHERE r.recipeId = $selectedRecipeId \n            WITH collect(m.name) AS main_ingredients, r\n            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)\n            WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep\n            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;", { selectedRecipeId: recipeId })];
                 case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result];
+                    result = _b.sent();
+                    console.log(result.records.map(function (record) { return record.toObject(); }));
+                    record = result.records[0];
+                    _a = record.toObject(), recipe_id = _a.recipe_id, recipe_name = _a.recipe_name, recipe_picture = _a.recipe_picture, all_ingredients = _a.all_ingredients, main_ingredients = _a.main_ingredients, ingredient_amounts = _a.ingredient_amounts, ingredient_prep = _a.ingredient_prep, ingredient_units = _a.ingredient_units;
+                    recipe = {
+                        recipe_id: recipe_id,
+                        recipe_name: recipe_name,
+                        recipe_picture: recipe_picture,
+                        all_ingredients: all_ingredients,
+                        main_ingredients: main_ingredients,
+                        ingredient_amounts: ingredient_amounts,
+                        ingredient_units: ingredient_units,
+                        ingredient_prep: ingredient_prep
+                    };
+                    return [2 /*return*/, recipe];
             }
         });
     });
