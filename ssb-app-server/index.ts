@@ -2,11 +2,16 @@ import express = require('express');
 import neo4j = require('neo4j-driver')
 import * as dotenv from 'dotenv'
 import { param } from 'express-validator';
+import * as swaggerUi from 'swagger-ui-express';
+import {swaggerDocument} from './swagger';
 
 dotenv.config()
 
 const app = express()
 const port = 8080;
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 //Listen on port 8080
@@ -16,7 +21,7 @@ app.listen(port, () =>
 
 
 //Server Welcome
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ")
 })
 

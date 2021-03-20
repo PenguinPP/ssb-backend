@@ -40,15 +40,18 @@ var express = require("express");
 var neo4j = require("neo4j-driver");
 var dotenv = require("dotenv");
 var express_validator_1 = require("express-validator");
+var swaggerUi = require("swagger-ui-express");
+var swagger_1 = require("./swagger");
 dotenv.config();
 var app = express();
 var port = 8080;
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger_1.swaggerDocument));
 //Listen on port 8080
 app.listen(port, function () {
     return console.log("SSB App Server listening on port " + port + "!");
 });
 //Server Welcome
-app.get("/", function (req, res) {
+app.get("/api", function (req, res) {
     res.send("-Restricted Area- \nSSB Application Server \n -Restricted Area- ");
 });
 //Get all recipes and details for ingredients and main ingredients
