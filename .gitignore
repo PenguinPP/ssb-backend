@@ -1,2 +1,5 @@
 /ssb-app-server/node_modules
 ssb-app-server/.env
+ssb-app-server/src/pre-start/env/development.env
+ssb-app-server/src/pre-start/env/production.env
+ssb-app-server/src/pre-start/env/test.env
