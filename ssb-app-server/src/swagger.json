@@ -123,5 +123,35 @@
         }
       }
     }
+  },
+  "definitions": {
+    "Recipe": {
+      "type": "object",
+      "properties": {
+        "recipe_id": { "type": "IIdentity" },
+        "recipe_name": { "type": "String" },
+        "recipe_picture": { "type": "String" },
+        "all_ingredients": { "type": "String[]" },
+        "main_ingredients": { "type": "String[]" },
+        "ingredient_amounts": { "type": "String[]" },
+        "ingredient_units": { "type": "String[]" },
+        "ingredient_prep": { "type": "String[]" }
+      }
+    },
+    "RecipePreview": {
+      "type": "object",
+      "properties": {
+        "recipe_id": { "type": "IIdentity" },
+        "recipe_name": { "type": "String" },
+        "main_ingredients": { "type": "String[]" },
+        "recipe_tags": { "type": "String[]" }
+      }
+    },
+    "Ingredient": {
+      "ingredient_name": { "type": "String" }
+    },
+    "Tag": {
+      "tag_name": { "type": "String" }
+    }
   }
 }
