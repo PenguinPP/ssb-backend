@@ -6,15 +6,19 @@ import { param } from "express-validator";
 
 const router = Router();
 const recipeDao = new RecipeDao();
-const { BAD_REQUEST, CREATED, OK, NOT_FOUND } = StatusCodes;
+const { OK, NOT_FOUND } = StatusCodes;
 
 /******************************************************************************
  *                      Get All Recipes - "GET /api/recipes/all"
  ******************************************************************************/
 
 router.get("/all", async (req: Request, res: Response) => {
-  const recipes = await recipeDao.getAll();
-  return res.status(OK).json({ recipes });
+  try {
+    const recipes = await recipeDao.getAll();
+    return res.status(OK).json({ recipes });
+  } catch (error) {
+    return res.status(NOT_FOUND).json({ error: error.message });
+  }
 });
 
 /******************************************************************************
@@ -22,8 +26,12 @@ router.get("/all", async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.get("/previews", async (req: Request, res: Response) => {
-  const recipes = await recipeDao.getAllPreviews();
-  return res.status(OK).json({ recipes });
+  try {
+    const recipes = await recipeDao.getAllPreviews();
+    return res.status(OK).json({ recipes });
+  } catch (error) {
+    return res.status(NOT_FOUND).json({ error: error.message });
+  }
 });
 
 /******************************************************************************
@@ -40,8 +48,7 @@ router.get(
       );
       return res.status(OK).json({ recipes });
     } catch (error) {
-      console.log("Failure at recipe controller");
-      return res.status(BAD_REQUEST).json({ error: error.message });
+      return res.status(NOT_FOUND).json({ error: error.message });
     }
   }
 );

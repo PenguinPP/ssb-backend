@@ -9,20 +9,25 @@ export interface IIngredientDao {
 class IngredientDao implements IIngredientDao {
   public async getAll(): Promise<IIngredient[]> {
     let session = neo4jDriver.session();
-    let result = await session.run(
-      `MATCH (t:ingredient)
+    try {
+      let result = await session.run(
+        `MATCH (t:ingredient)
           RETURN t.name AS ingredient_name;`
-    );
-    session.close();
+      );
 
-    return result.records.map((record) => {
-      const { ingredient_name } = record.toObject();
-      const ingredient: Ingredient = {
-        ingredient_name: ingredient_name,
-      };
+      return result.records.map((record) => {
+        const { ingredient_name } = record.toObject();
+        const ingredient: Ingredient = {
+          ingredient_name: ingredient_name,
+        };
 
-      return ingredient;
-    });
+        return ingredient;
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      session.close();
+    }
   }
 }
 

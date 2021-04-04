@@ -6,15 +6,19 @@ import { param } from "express-validator";
 
 const router = Router();
 const ingredientDao = new IngredientDao();
-const { BAD_REQUEST, CREATED, OK } = StatusCodes;
+const { NOT_FOUND, OK } = StatusCodes;
 
 /******************************************************************************
  *                      Get All Ingredients - "GET /api/ingredients/all"
  ******************************************************************************/
 
 router.get("/all", async (req: Request, res: Response) => {
-  const ingredients = await ingredientDao.getAll();
-  return res.status(OK).json({ ingredients });
+  try {
+    const ingredients = await ingredientDao.getAll();
+    return res.status(OK).json({ ingredients });
+  } catch (err) {
+    return res.status(NOT_FOUND).json({ error: err.message });
+  }
 });
 
 export default router;
