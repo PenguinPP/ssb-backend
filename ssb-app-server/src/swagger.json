@@ -1,0 +1,157 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Spice Spice Baby Application Server",
+    "description": "SSB Recipe App back-end application server",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Recipe database API endpoints"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Recipes",
+      "description": "API for recipes in the database"
+    },
+    {
+      "name": "Ingredients",
+      "description": "API for ingredients in the database"
+    },
+    {
+      "name": "Tags",
+      "description": "API for Tags in the database"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/recipes/all": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get all recipes in database with all details",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Recipe"
+            }
+          }
+        }
+      }
+    },
+    "/recipes/previews": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get all recipes previews in database",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RecipePreview"
+            }
+          }
+        }
+      }
+    },
+    "/recipes/{recipeId}": {
+      "parameters": [
+        {
+          "name": "recipeId",
+          "in": "path",
+          "required": true,
+          "description": "Recipe ID",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get recipe with given Recipe ID",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "description": "Recipe ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Recipe"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/ingredients/all": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Get all Ingredients from database",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Ingredient"
+            }
+          }
+        }
+      }
+    },
+    "/Tags/all": {
+      "get": {
+        "tags": ["Tags"],
+        "summary": "Get all Tags from database",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tag"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Recipe": {
+      "type": "object",
+      "properties": {
+        "recipe_id": { "type": "IIdentity" },
+        "recipe_name": { "type": "String" },
+        "recipe_picture": { "type": "String" },
+        "all_ingredients": { "type": "String[]" },
+        "main_ingredients": { "type": "String[]" },
+        "ingredient_amounts": { "type": "String[]" },
+        "ingredient_units": { "type": "String[]" },
+        "ingredient_prep": { "type": "String[]" }
+      }
+    },
+    "RecipePreview": {
+      "type": "object",
+      "properties": {
+        "recipe_id": { "type": "IIdentity" },
+        "recipe_name": { "type": "String" },
+        "main_ingredients": { "type": "String[]" },
+        "recipe_tags": { "type": "String[]" }
+      }
+    },
+    "Ingredient": {
+      "ingredient_name": { "type": "String" }
+    },
+    "Tag": {
+      "tag_name": { "type": "String" }
+    }
+  }
+}
