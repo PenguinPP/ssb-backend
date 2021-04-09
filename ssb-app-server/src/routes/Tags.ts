@@ -1,8 +1,6 @@
 import StatusCodes from "http-status-codes";
 import { Request, Response, Router } from "express";
 import TagDao from "@daos/Tag/TagDao";
-import { paramMissingError, IRequest } from "@shared/constants";
-import { param } from "express-validator";
 
 const router = Router();
 const tagDao = new TagDao();
