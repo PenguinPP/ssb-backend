@@ -1,0 +1,56 @@
+dish name,dish type,cuisine,dietary,cooking method,equipment,flavour,protein,carb,vegetable and fruit,dairy,pantry,spices
+lasagna,breakfast,italian,vegan,oven baked,wok,spicy,lentils,noodles,cabbage,cheese,fennel,fennel
+fettuccine alfredo,main dish,japanese,vegetarian,pan fry,oven,spices,chicken,udon,shiitake mushrooms,parmesan,vegetable stock,pepper
+chicken alfredo primavera,dessert,asian,pescatarian,frying,,sweet,meat,rice noodles,mushrooms,cream sauce,pepper,cinnamon sticks
+pizza,side dish,indian,dairy free,breading,,sweet and sour ,beef,pasta,spring onions,greek yogurt,beef stock,cardamom
+alfredo,,thai,nuts,,,,seafood,rice,lemons,milk,pickles,cloves
+margherita pizza,,mexican,peanuts,stir fry,,,salmon,penne,ginger,heavy cream,balsamic vinegar,garam masala
+,,american,chinese,pickling,,,prawns,bread,garlic,butter,enchilada sauce,cumin
+spaghetti bolognese,,french,dairy-free,braising,,,prawn,tortillas,red onions,,chicken stock,chilli powder
+salmon prawn risotto,,british,dairy,baking,,,bacon,spaghetti ,onions,,wonton skins,paprika
+risotto,,,gluten free,,,,fish,fettucine,coriander,,coconut cream,turmeric
+carbonara,,,keto,,,,pork,,chilli,,rice wine,cumin seeds
+spicy arrabiata penne,,,,,,,pork chops,,peas,,coconut milk,mustard seeds
+teriyaki,,,,,,,toor dal,,onion,,curry paste,curry powder
+honey teriyaki salmon,,,,,,,paneer,,chinese broccoli,,madras paste,
+tonkatsu,,,,,,,lamb,,potatoes,,cinnamon sticks,
+chicken karaage,,,,,,,minced beef,,green beans,,cardamom,
+yaki udon,,,,,,,egg,,avocado,,cloves,
+curry,,,,,,,eggs,,beans,,garam masala,
+katsu chicken curry,,,,,,,,,chickpeas,,cumin,
+dal fry,,,,,,,,,avocadoes,,chilli powder,
+dal,,,,,,,,,berries,,paprika,
+dhal,,,,,,,,,lettuce,,turmeric,
+tandoori,,,,,,,,,broccoli,,ghee,
+tandoori chicken,,,,,,,,,aubergine,,cumin seeds,
+matar paneer,,,,,,,,,eggplant,,mustard seeds,
+lamb roganjosh,,,,,,,,,courgettes,,curry powder,
+pad see ew,,,,,,,,,zucchini,,sesame oil,
+thai green curry,,,,,,,,,yellow peppers,,potato starch,
+massaman beef curry,,,,,,,,,carrots,,soy sauce,
+kung pao chicken,,,,,,,,,celery,,sake,
+dumplings,,,,,,,,,parsley,,chilli flakes,
+wonton,,,,,,,,,lemon,,wine,
+honey balsamic chicken,,,,,,,,,black olives,,tomato puree,
+soup,,,,,,,,,thyme,,flour,
+egg drop soup,,,,,,,,,mushroom,,chickpeas,
+sweet and sour,,,,,,,,,tomato,,,
+sweet and sour pork,,,,,,,,,basil,,,
+chicken congee,,,,,,,,,tomatoes,,,
+congee,,,,,,,,,kidney beans,,,
+taco,,,,,,,,,fennel,,,
+chicken baked tacos,,,,,,,,,,,,
+fajitas,,,,,,,,,,,,
+chickpea fajitas,,,,,,,,,,,,
+casserole,,,,,,,,,,,,
+chicken enchilada casserole,,,,,,,,,,,,
+tacos,,,,,,,,,,,,
+fish taco,,,,,,,,,,,,
+braised beef chilli,,,,,,,,,,,,
+macaroni,,,,,,,,,,,,
+sandwich,,,,,,,,,,,,
+burgers,,,,,,,,,,,,
+big mac,,,,,,,,,,,,
+pancakes,,,,,,,,,,,,
+ratatouille,,,,,,,,,,,,
+omelette,,,,,,,,,,,,
