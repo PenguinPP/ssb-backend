@@ -1,6 +1,6 @@
+import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
 import Tag, { ITag } from "@entities/Tag";
 import neo4j = require("neo4j-driver");
-import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
 
 export interface ITagDao {
   getAll: () => Promise<ITag[]>;
@@ -12,7 +12,7 @@ class TagDao implements ITagDao {
 
     try {
       let result = await session.run(
-        `MATCH (t:tag)
+        `MATCH (t:Tag)
           RETURN t.name AS tag_name;`
       );
 

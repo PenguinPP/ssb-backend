@@ -1,6 +1,6 @@
+import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
 import Ingredient, { IIngredient } from "@entities/Ingredient";
 import neo4j = require("neo4j-driver");
-import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
 
 export interface IIngredientDao {
   getAll: () => Promise<IIngredient[]>;
@@ -11,7 +11,7 @@ class IngredientDao implements IIngredientDao {
     let session = neo4jDriver.session();
     try {
       let result = await session.run(
-        `MATCH (t:ingredient)
+        `MATCH (t:Ingredient)
           RETURN t.name AS ingredient_name;`
       );
 

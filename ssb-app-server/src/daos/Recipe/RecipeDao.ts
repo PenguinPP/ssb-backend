@@ -1,7 +1,7 @@
-import Recipe, { IRecipe } from "@entities/Recipe";
-import RecipePreview, { IRecipePreview } from "@entities/RecipePreview";
-import neo4j = require("neo4j-driver");
 import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
+import { IRecipe } from "@entities/Recipe";
+import { IRecipePreview } from "@entities/RecipePreview";
+import neo4j = require("neo4j-driver");
 
 export interface IRecipeDao {
   getAll: () => Promise<IRecipe[]>;
@@ -15,9 +15,9 @@ class RecipeDao implements IRecipeDao {
 
     try {
       let result = await session.run(
-        `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+        `MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
             WITH collect(m.name) AS main_ingredients, r
-            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
+            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, 
             collect (c.preparation) AS ingredient_prep
             RETURN r.recipeId AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`
@@ -58,9 +58,9 @@ class RecipeDao implements IRecipeDao {
 
     try {
       let result = await session.run(
-        `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+        `MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
             WITH collect(m.name) AS main_ingredients, r
-            MATCH (r)-[:HAS_TAG]->(t:tag)
+            MATCH (r)-[:HAS_TAG]->(t:Tag)
             WITH collect(t.name) AS recipe_tags, r, main_ingredients
             RETURN r.name AS recipe_name, r.recipeId AS recipe_id, recipe_tags, main_ingredients;`
       );
@@ -94,10 +94,10 @@ class RecipeDao implements IRecipeDao {
 
     try {
       let result = await session.run(
-        `MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+        `MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
             WHERE r.recipeId = $selectedRecipeId 
             WITH collect(m.name) AS main_ingredients, r
-            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
+            MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
             RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`,
         { selectedRecipeId: recipeId }
