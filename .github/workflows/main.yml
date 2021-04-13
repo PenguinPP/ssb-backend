@@ -30,7 +30,6 @@ jobs:
           mkdir ./ssb-app-server/src/pre-start/env
           touch ./ssb-app-server/src/pre-start/env/production.env
           echo "${{ secrets.APP_SERVER_ENV }}" > ./ssb-app-server/src/pre-start/env/production.env
-          cat ./ssb-app-server/.env
 
       - name: Deploy application
         id: deploy
