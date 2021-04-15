@@ -13,12 +13,13 @@ class TagDao implements ITagDao {
     try {
       let result = await session.run(
         `MATCH (t:Tag)
-          RETURN collect(t.name) AS tag_list;`
+          RETURN t.id AS tag_id, t.name AS tag_name;`
       );
 
       return result.records.map((record) => {
-        const { tag_name } = record.toObject();
+        const { tag_id, tag_name } = record.toObject();
         const tag: Tag = {
+          tag_id: tag_id,
           tag_name: tag_name,
         };
 

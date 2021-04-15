@@ -20,7 +20,7 @@ class RecipeDao implements IRecipeDao {
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, 
             collect (c.preparation) AS ingredient_prep
-            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`
+            RETURN r.id AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`
       );
 
       return result.records.map((record) => {

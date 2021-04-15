@@ -12,12 +12,13 @@ class IngredientDao implements IIngredientDao {
     try {
       let result = await session.run(
         `MATCH (t:Ingredient)
-          RETURN collect(t.name) AS ingredient_list;`
+          RETURN t.id AS ingredient_id, t.name AS ingredient_name;`
       );
 
       return result.records.map((record) => {
-        const { ingredient_name } = record.toObject();
+        const { ingredient_id, ingredient_name } = record.toObject();
         const ingredient: Ingredient = {
+          ingredient_id: ingredient_id,
           ingredient_name: ingredient_name,
         };
 
