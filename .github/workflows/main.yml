@@ -39,6 +39,7 @@ jobs:
       - name: Build app
         run: |
           npm run build
+          cd ./ssb-app-server
           echo 'App built'
 
       - name: Deploy application
