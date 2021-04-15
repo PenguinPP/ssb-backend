@@ -1,15 +1,14 @@
-import { IIdentity } from './Identity';
 
 export interface IRecipePreview {
     recipe_name: String,
-    recipe_id: IIdentity,
+    recipe_id: String,
     recipe_tags: String[],
     main_ingredients: String[]
 }
 
 class RecipePreview implements IRecipePreview{
     public recipe_name: String
-    public recipe_id: IIdentity
+    public recipe_id: String
     public recipe_tags: String[]
     public main_ingredients: String[]
 

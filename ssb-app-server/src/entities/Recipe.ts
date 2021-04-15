@@ -1,7 +1,6 @@
-import { IIdentity } from "./Identity";
 
 export interface IRecipe {
-  recipe_id: IIdentity;
+  recipe_id: String;
   recipe_name: String;
   recipe_picture: String;
   all_ingredients: String[];
@@ -12,7 +11,7 @@ export interface IRecipe {
 }
 
 class Recipe implements IRecipe {
-  public recipe_id: IIdentity;
+  public recipe_id: String;
   public recipe_name: String;
   public recipe_picture: String;
   public all_ingredients: String[];
