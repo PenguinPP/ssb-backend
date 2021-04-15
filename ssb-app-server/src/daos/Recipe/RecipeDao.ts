@@ -62,7 +62,7 @@ class RecipeDao implements IRecipeDao {
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[:HAS_TAG]->(t:Tag)
             WITH collect(t.name) AS recipe_tags, r, main_ingredients
-            RETURN r.name AS recipe_name, r.recipeId AS recipe_id, recipe_tags, main_ingredients;`
+            RETURN r.name AS recipe_name, r.id AS recipe_id, recipe_tags, main_ingredients;`
       );
 
       return result.records.map((record) => {
@@ -99,7 +99,7 @@ class RecipeDao implements IRecipeDao {
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
-            RETURN r.recipeId AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`,
+            RETURN r.id AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;`,
         { selectedRecipeId: recipeId }
       );
 

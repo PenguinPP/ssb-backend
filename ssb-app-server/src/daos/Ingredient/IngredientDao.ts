@@ -12,7 +12,7 @@ class IngredientDao implements IIngredientDao {
     try {
       let result = await session.run(
         `MATCH (t:Ingredient)
-          RETURN t.name AS ingredient_name;`
+          RETURN collect(t.name) AS ingredient_list;`
       );
 
       return result.records.map((record) => {

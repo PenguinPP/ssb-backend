@@ -13,7 +13,7 @@ class TagDao implements ITagDao {
     try {
       let result = await session.run(
         `MATCH (t:Tag)
-          RETURN t.name AS tag_name;`
+          RETURN collect(t.name) AS tag_list;`
       );
 
       return result.records.map((record) => {
