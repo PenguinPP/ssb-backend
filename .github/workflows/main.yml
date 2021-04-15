@@ -33,6 +33,7 @@ jobs:
           
       - name: Build app
         run:
+          cd ./ssb-app-server
           npm run build
           echo 'App built'
 
