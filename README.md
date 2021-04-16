@@ -1,25 +1,20 @@
 # ssb-backend
 
-Code for application server and database queries.
+Backend repository for Spice Spice Baby recipe app. 
 
-## Available api calls
+## ssb-app-server
 
-#### /api/recipes/previews
+Application server written in Typescript, utilising Express to handle web traffic, and Swagger for documentation
 
-Returns all recipes and their preview details (ID, Name, list of main ingredients, list of tags)
 
-#### /api/recipes/details
+### Available api calls
 
-Returns all recipes, information on ingredients (amount, units and prep), a list of main ingredients and a list of tags for each recipe.
+API documentation can be found <a href="https://project-ssb-310204.ts.r.appspot.com/swagger/">here</a>.
 
-#### /api/ingredients/all
 
-Returns all ingredients
+## ssb-db
 
-#### /api/tags/all
+Folder containing python scripts used to obtain, clean and format recipe data. Also contains cypher scripts used to import data into Neo4j amongst other queries.
 
-Returns all tags
-
-#### /api/recipe/:recipeId
-
-Returns all details for a specific recipe (id, ingredients, main ingredients, amounts, units and prep for ingredients, name, pictureLink, method)
+Current database schema:
+<img srd="https://imgur.com/a/r3xiiaB"></img>
