@@ -17,4 +17,4 @@ API documentation can be found <a href="https://project-ssb-310204.ts.r.appspot.
 Folder containing python scripts used to obtain, clean and format recipe data. Also contains cypher scripts used to import data into Neo4j amongst other queries.
 
 Current database schema:
-<img src="https://i.imgur.com/uZZYoGs.png"></img>
+<img src="https://i.imgur.com/eaebdOb.png"></img>
