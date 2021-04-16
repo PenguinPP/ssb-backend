@@ -7,7 +7,7 @@ Backend repository for Spice Spice Baby recipe app containing code related to th
 Application server written in Typescript, utilising Express to handle web traffic, and Swagger for documentation.
 
 
-### Available api calls
+### Available API calls
 
 API documentation can be found <a href="https://project-ssb-310204.ts.r.appspot.com/swagger/">here</a>.
 
