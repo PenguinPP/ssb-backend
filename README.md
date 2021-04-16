@@ -4,7 +4,7 @@ Backend repository for Spice Spice Baby recipe app containing code related to th
 
 ## ssb-app-server
 
-Application server written in Typescript, utilising Express to handle web traffic, and Swagger for documentation.
+Application server written in Typescript, utilising Express to handle web traffic, and Swagger for documentation. A GitHub Action has been set-up to automatically deploy the latest version of the application server onto Google App Engine. The Neo4j database is hosted on Google Compute Engine.
 
 
 ### Available API calls
