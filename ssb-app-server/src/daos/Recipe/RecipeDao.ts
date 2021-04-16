@@ -95,7 +95,7 @@ class RecipeDao implements IRecipeDao {
     try {
       let result = await session.run(
         `MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
-            WHERE r.recipeId = $selectedRecipeId 
+            WHERE r.id = $selectedRecipeId 
             WITH collect(m.name) AS main_ingredients, r
             MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
             WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep

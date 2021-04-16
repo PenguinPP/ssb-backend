@@ -1,39 +1,32 @@
+//Queries to be run on database by application server
+
 //Return all recipes with list of main ingredient and list of all ingredients (with amounts)
-MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
 WITH collect(m.name) AS main_ingredients, r
-MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
-WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
-RETURN r, main_ingredients, all_ingredients, ingredient_amounts;
+MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
+WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
+RETURN r.id AS recipe_id, r.name AS recipe_name, r.picture AS recipe_picture, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;
+
 
 //Return Recipe Preview details (ID, Name, list of main ingredients, list of tags)
-MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
+MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
 WITH collect(m.name) AS main_ingredients, r
-MATCH (r)-[:HAS_TAG]->(t:tag)
-WITH collect(t) AS tags, r, main_ingredients
-RETURN r.name, r.recipeId, tags, main_ingredients
+MATCH (r)-[:HAS_TAG]->(t:Tag)
+WITH collect(t.name) AS recipe_tags, r, main_ingredients
+RETURN r.name AS recipe_name, r.id AS recipe_id, recipe_tags, main_ingredients;
 
 //Return all details for specific recipe
-MATCH (r:recipe)-[:HAS_MAIN_INGREDIENT]->(m:ingredient)
-WHERE r.recipeId = $selectedRecipeId 
+MATCH (r:Recipe)-[:HAS_MAIN_INGREDIENT]->(m:Ingredient)
+WHERE r.id = $selectedRecipeId 
 WITH collect(m.name) AS main_ingredients, r
-MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:ingredient)
-WITH collect(i) AS all_ingredients, r, main_ingredients, collect(c) AS ingredient_amounts
-RETURN r, main_ingredients, all_ingredients, ingredient_amounts;
+MATCH (r)-[c:CONTAINS_INGREDIENT]->(i:Ingredient)
+WITH collect(i.name) AS all_ingredients, r, main_ingredients, collect(c.amount) AS ingredient_amounts, collect(c.unit) AS ingredient_units, collect (c.preparation) AS ingredient_prep
+RETURN r.id AS recipe_id, r.name AS recipe_name, main_ingredients, all_ingredients, ingredient_amounts, ingredient_units, ingredient_prep;
 
 //Return all ingredients
-MATCH (i:ingredient)
-RETURN i;
-
-
-//Return all recipes
-MATCH (r:recipe)
-RETURN r;
+MATCH (t:Ingredient)
+RETURN t.id AS ingredient_id, t.name AS ingredient_name;
 
 //Return all tags
-MATCH (t:tags)
-RETURN t;
-
-//Return list of main ingredients
-MATCH (r:recipe)-[c:HAS_MAIN_INGREDIENT]-(i:ingredient)
-WITH collect(i.name) AS main_ingredients
-RETURN main_ingredients;
+MATCH (t:Tag)
+RETURN t.id AS tag_id, t.name AS tag_name;
