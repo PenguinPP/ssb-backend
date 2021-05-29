@@ -6,7 +6,7 @@ name: Deploy to Google App Engine
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [master]
+    branches:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
           mkdir ./ssb-app-server/src/pre-start/env
           touch ./ssb-app-server/src/pre-start/env/production.env
           echo "${{ secrets.APP_SERVER_ENV }}" > ./ssb-app-server/src/pre-start/env/production.env
-      
+
       - name: Install app
         run: |
           cd ./ssb-app-server
