@@ -1,50 +1,50 @@
-# This is a basic workflow to help you get started with Actions
+# # This is a basic workflow to help you get started with Actions
 
-name: Deploy to Google App Engine
+# name: Deploy to Google App Engine
 
-# Controls when the action will run.
-on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches:
+# # Controls when the action will run.
+# on:
+#   # Triggers the workflow on push or pull request events but only for the master branch
+#   push:
+#     branches:
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    name: Google App Engine Deployment
-    runs-on: ubuntu-latest
-    steps:
-      #Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     name: Google App Engine Deployment
+#     runs-on: ubuntu-latest
+#     steps:
+#       #Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@v2
 
-      #Creates .env file
-      - name: Create environment variables
-        env:
-          ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
-        run: |
-          echo "$ENV_INFO"
-          mkdir ./ssb-app-server/src/pre-start/env
-          touch ./ssb-app-server/src/pre-start/env/production.env
-          echo "${{ secrets.APP_SERVER_ENV }}" > ./ssb-app-server/src/pre-start/env/production.env
+#       #Creates .env file
+#       - name: Create environment variables
+#         env:
+#           ENV_INFO: ${{ secrets.APP_SERVER_ENV }}
+#         run: |
+#           echo "$ENV_INFO"
+#           mkdir ./ssb-app-server/src/pre-start/env
+#           touch ./ssb-app-server/src/pre-start/env/production.env
+#           echo "${{ secrets.APP_SERVER_ENV }}" > ./ssb-app-server/src/pre-start/env/production.env
 
-      - name: Install app
-        run: |
-          cd ./ssb-app-server
-          npm install
+#       - name: Install app
+#         run: |
+#           cd ./ssb-app-server
+#           npm install
 
-      - name: Build app
-        run: |
-          cd ./ssb-app-server
-          npm run build
-          echo 'App built'
+#       - name: Build app
+#         run: |
+#           cd ./ssb-app-server
+#           npm run build
+#           echo 'App built'
 
-      - name: Deploy application
-        id: deploy
-        uses: google-github-actions/deploy-appengine@main
-        with:
-          credentials: ${{ secrets.GCP_JSON_CREDENTIALS }}
-          working_directory: "ssb-app-server"
+#       - name: Deploy application
+#         id: deploy
+#         uses: google-github-actions/deploy-appengine@main
+#         with:
+#           credentials: ${{ secrets.GCP_JSON_CREDENTIALS }}
+#           working_directory: "ssb-app-server"
