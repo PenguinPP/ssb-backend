@@ -16,6 +16,7 @@ router.get("/all", async (req: Request, res: Response) => {
     const recipes = await recipeDao.getAll();
     return res.status(OK).json({ recipes });
   } catch (error) {
+    console.log(res);
     return res.status(NOT_FOUND).json({ error: error.message });
   }
 });

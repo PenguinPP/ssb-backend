@@ -6,7 +6,23 @@
     "lint": "eslint . --ext .ts",
     "start": "node -r module-alias/register ./dist --env=production",
     "start:dev": "nodemon",
-    "test": "nodemon --config ./spec/nodemon.json"
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ],
+    "moduleNameMapper": {
+      "@daos/(.*)": "<rootDir>/src/daos/$1",
+      "@entities/(.*)": "<rootDir>/src/entities/$1",
+      "@shared/(.*)": "<rootDir>/src/shared/$1",
+      "@server/(.*)": "<rootDir>/src/$1"
+    }
   },
   "nodemonConfig": {
     "watch": [

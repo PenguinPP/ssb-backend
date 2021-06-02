@@ -55,8 +55,8 @@ const viewsDir = path.join(__dirname, "views");
 app.set("views", viewsDir);
 const staticDir = path.join(__dirname, "public");
 app.use(express.static(staticDir));
-app.get("*", (req: Request, res: Response) => {
-  res.send("Spice Spice Baby Application Server");
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json("Spice Spice Baby Application Server");
 });
 
 // Export express instance

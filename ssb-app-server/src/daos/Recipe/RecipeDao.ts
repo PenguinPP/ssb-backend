@@ -1,7 +1,6 @@
 import neo4jDriver from "@daos/SsbDB/Neo4jDriverDao";
 import { IRecipe } from "@entities/Recipe";
 import { IRecipePreview } from "@entities/RecipePreview";
-import neo4j = require("neo4j-driver");
 
 export interface IRecipeDao {
   getAll: () => Promise<IRecipe[]>;
@@ -66,12 +65,8 @@ class RecipeDao implements IRecipeDao {
       );
 
       return result.records.map((record) => {
-        const {
-          recipe_name,
-          recipe_id,
-          recipe_tags,
-          main_ingredients,
-        } = record.toObject();
+        const { recipe_name, recipe_id, recipe_tags, main_ingredients } =
+          record.toObject();
 
         const recipe_preview: IRecipePreview = {
           recipe_name: recipe_name,
